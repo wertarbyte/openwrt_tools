@@ -27,7 +27,14 @@ while read DEST DDIR; do
                 mkdir -p "$FDSTDIR"
             }
             if [ ! -e "$FDST" ] || [ -L "$FDST" ]; then
-                ln -sf "$FSRC" "$FDST" 
+                # do not rewrite every link
+                if [ -L "$FDST" ] && [ `readlink "$FDST"` = "$FSRC" ]; then
+                    :
+                    #echo "   $FDST already linked." >&2
+                else
+                    echo "   linking $FSRC -> $FDST" >&2
+                    ln -sf "$FSRC" "$FDST" 
+                fi
             else
                 echo "   Not replacing existing file $FDST!" >&2
             fi
