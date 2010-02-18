@@ -19,16 +19,17 @@ while read DEST DDIR; do
         PKG=${PKG%.list}
         echo "  Linking package ${PKG} from $DEST..." >&2
         while read FSRC; do
-            FDST=/${FSRC#$DDIR}
+            FDST=${FSRC#$DDIR}
             
-            FDSTDIR=`dirname "$FDST"`
-            
-            [ ! -d "$FDSTDIR" ] && mkdir -p "$FDSTDIR"
-  
+            FDSTDIR=${FDST%/*}/
+            [ ! -d "$FDSTDIR" ] && {
+                echo "   Creating directory $FDSTDIR..." >&2
+                mkdir -p "$FDSTDIR"
+            }
             if [ ! -e "$FDST" ] || [ -L "$FDST" ]; then
                 ln -sf "$FSRC" "$FDST" 
             else
-                echo "Not replacing existing file $FDST!" >&2
+                echo "   Not replacing existing file $FDST!" >&2
             fi
         done < "$LIST"
   done
