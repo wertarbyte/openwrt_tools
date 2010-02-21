@@ -1,0 +1,9 @@
+#!/bin/sh
+# etcgit - poor man's etckeeper
+# manage /etc with git
+
+# /etc/.git is probably a symlink to a more suitable location
+# (e.g. usb storage)
+
+exec git --work-tree=/etc/ --git-dir=/etc/.git/ "$@"
+
