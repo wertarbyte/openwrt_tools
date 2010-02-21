@@ -5,6 +5,21 @@
 #
 # By Stefan Tomanek <stefan@pico.ruhr.de>
 
+# readlink might not be installed, so we probably
+# cannot detect whether a link points to a specific target
+if which readlink >/dev/null; then
+    points_to() {
+        local DST
+        local SRC
+        DST="$1"
+        SRC="$2"
+        [ `readlink "$DST"` = "$SRC" ]
+    }
+else
+    # we cannot determine the target of the link,
+    # so we return false to be on the safe side
+    false
+fi
 
 # find out the installation directories
 awk '$1 == "dest" && $3 != "/" { print $2, $3 }' /etc/opkg.conf | \
